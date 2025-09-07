@@ -92,13 +92,33 @@
       cursor: pointer;
     }
     #reportPreview img {
-      max-width: 300px;
-      display: block;
-      margin: 10px 0;
-    }
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px 0;
+    
+}
+
+
+
+
+#reportPreview > * {
+  page-break-inside: avoid;
+  break-inside: avoid;
+
+}
+
+
   </style>
 </head>
 <body>
+
+<!-- الشعار -->
+<div style="text-align:center; margin-bottom:20px;">
+   <img src="images/heilbronn-fliesenleger-fliesenreinigung-logo-text.jpeg" alt="Logo">
+       <img src="images/heilbronn-fliesenleger-fliesenreinigung-logo.jpeg" alt="Logo"
+ style="max-width:200px;" />
+</div>
 
 <h1>abnahme</h1>
 
@@ -110,7 +130,7 @@
   <h3 style="color:#004080; margin-top:20px;">Adresse</h3>
   <label>Straße und Hausnummer</label>
   <input type="text" id="strasse" placeholder="z.B. Musterstraße 12" />
-
+  
   <label>Postleitzahl</label>
   <input type="text" id="plz" placeholder="z.B. 12345" />
 
@@ -143,6 +163,8 @@
 <div class="actions no-print">
   <button type="button" id="clearSig">🧹 Unterschrift löschen</button>
   <button type="button" id="saveBtn">💾 Als PDF speichern</button>
+  
+
 </div>
 
 <script>
@@ -161,6 +183,7 @@
     div.appendChild(input);
   });
 
+  // Heute Datum setzen
   const heute = new Date();
   const iso = heute.toISOString().split("T")[0];
   document.getElementById("datum").value = iso;
@@ -175,7 +198,7 @@
     });
   }
 
-  // Bild hinzufügen
+  // Bilder Vorschau & Upload
   document.getElementById("imageUpload").addEventListener("change", function(event) {
     const files = event.target.files;
     const preview = document.getElementById("imagePreview");
@@ -186,8 +209,10 @@
         const imageBox = document.createElement("div");
         imageBox.className = "image-box";
 
-        const img = document.createElement("img");
-        img.src = e.target.result;
+       const img = document.createElement("img");
+img.src = e.target.result;
+img.crossOrigin = "anonymous"; // هذا هو المهم
+
 
         const delBtn = document.createElement("button");
         delBtn.textContent = "🗑️";
@@ -202,88 +227,116 @@
       reader.readAsDataURL(file);
     });
 
-    // Reset input
     event.target.value = '';
   });
 
-  // تحميل الصور كـ Promises
-  const getBase64Images = () => {
-    const uploadedImageBoxes = document.querySelectorAll("#imagePreview .image-box img");
-    const promises = [];
+//////
 
-    uploadedImageBoxes.forEach(img => {
-      promises.push(
-        new Promise((resolve) => {
-          const image = new Image();
-          image.crossOrigin = "anonymous";
-          image.onload = () => {
-            resolve(`<img src="${img.src}" alt="Bild" style="max-width:300px; display:block; margin-bottom:10px;">`);
-          };
-          image.src = img.src;
-        })
-      );
-    });
 
-    return Promise.all(promises);
+////////
+
+  // تحويل الصور المرفوعة إلى HTML للعرض داخل الـ PDF
+  async function getUploadedImagesBase64() {
+    const imgs = document.querySelectorAll("#imagePreview .image-box img");
+    const arr = [];
+    for (const img of imgs) {
+      arr.push(`<img src="${img.src}" alt="Bild" style="max-width:300px; display:block; margin-bottom:10px;">`);
+    }
+    return arr.join("");
+  }
+
+   ////
+  // 🕓 ننتظر تحميل كل الصور قبل إنشاء PDF
+function waitForImagesToLoad(container) {
+  const images = container.querySelectorAll("img");
+  const promises = [];
+
+  images.forEach(img => {
+    if (!img.complete) {
+      promises.push(new Promise(resolve => {
+        img.onload = img.onerror = resolve;
+          console.log(`Image failed: ${img.src}`);
+          resolve(); // حتى لو فشلت، نكمل
+      }));
+    }
+  });
+
+  return Promise.all(promises);
+}
+
+document.getElementById("saveBtn").addEventListener("click", async () => {
+  if (signaturePad.isEmpty()) {
+    alert("Bitte unterschreiben, bevor Sie speichern!");
+    return;
+  }
+
+  const kunde = document.getElementById("kunde").value;
+  const strasse = document.getElementById("strasse").value;
+  const plz = document.getElementById("plz").value;
+  const ort = document.getElementById("ort").value;
+  const arbeit = document.getElementById("arbeit").value;
+  const datum = formatDateToGerman(document.getElementById("datum").value);
+  const signatureImage = signaturePad.toDataURL();
+
+  const materialsInputs = document.querySelectorAll("#materials input");
+  let materialsList = "";
+  materialsInputs.forEach(inp => {
+    if (inp.value.trim() !== "") {
+      materialsList += `<li>${inp.value}</li>`;
+    }
+  });
+
+  const imagesHTML = await getUploadedImagesBase64();
+
+  const preview = document.getElementById("reportPreview");
+  preview.innerHTML = `
+    <div>
+      <img src="images/heilbronn-fliesenleger-fliesenreinigung-logo-text.jpeg" alt="Logo" />
+      <img src="images/heilbronn-fliesenleger-fliesenreinigung-logo.jpeg" alt="Logo" />
+    </div>
+    <h2>Arbeitsbericht</h2>
+    <p><strong>Kunde:</strong> ${kunde || "-"}</p>
+    <p><strong>Adresse:</strong> ${strasse || "-"}, ${plz || ""} ${ort || ""}</p>
+    <p><strong>Verwendete Materialien:</strong></p>
+    <ul>${materialsList || "<li>-</li>"}</ul>
+    <p><strong>Arbeiten:</strong><br>${arbeit || "-"}</p>
+    <p><strong>Datum:</strong> ${datum}</p>
+    <p><strong>Unterschrift:</strong></p>
+    <img src="${signatureImage}" alt="Unterschrift" style="max-width:300px; display:block; margin-bottom:10px;" />
+    <p><strong>Bilder:</strong></p>
+    ${imagesHTML || "<p>-</p>"}
+  `;
+
+  document.getElementById("report").style.display = "none";
+  preview.style.display = "block";
+
+  // ⏳ ننتظر تحميل الصور
+  await waitForImagesToLoad(preview);
+
+  // إعدادات الـ PDF
+  const opt = {
+    margin: 0.5,
+    filename: 'arbeitsbericht.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 3, useCORS: true, scrollY: 0 },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
   };
 
-  document.getElementById("saveBtn").addEventListener("click", async () => {
-    if (signaturePad.isEmpty()) {
-      alert("Bitte unterschreiben, bevor Sie speichern!");
-      return;
-    }
+  // إنشاء الـ PDF وحفظه
+  await html2pdf().set(opt).from(preview).save();
 
-    const kunde = document.getElementById("kunde").value;
-    const strasse = document.getElementById("strasse").value;
-    const plz = document.getElementById("plz").value;
-    const ort = document.getElementById("ort").value;
-    const arbeit = document.getElementById("arbeit").value;
-    const datum = formatDateToGerman(document.getElementById("datum").value);
-    const signatureImage = signaturePad.toDataURL();
+  // عرض النموذج من جديد
+  document.getElementById("report").style.display = "block";
+  preview.style.display = "none";
+});
 
-    const materialsInputs = document.querySelectorAll("#materials input");
-    let materialsList = "";
-    materialsInputs.forEach(inp => {
-      if (inp.value.trim() !== "") {
-        materialsList += `<li>${inp.value}</li>`;
-      }
-    });
+  
 
-    const imagesHTMLArray = await getBase64Images();
-    const imagesHTML = imagesHTMLArray.join("");
-
-    const preview = document.getElementById("reportPreview");
-    preview.innerHTML = `
-      <h2>Arbeitsbericht</h2>
-      <p><strong>Kunde:</strong> ${kunde || "-"}</p>
-      <p><strong>Adresse:</strong> ${strasse || "-"}, ${plz || ""} ${ort || ""}</p>
-      <p><strong>Verwendete Materialien:</strong></p>
-      <ul>${materialsList || "<li>-</li>"}</ul>
-      <p><strong>Arbeiten:</strong><br>${arbeit || "-"}</p>
-      <p><strong>Datum:</strong> ${datum}</p>
-      <p><strong>Unterschrift:</strong></p>
-      <img src="${signatureImage}" style="width:200px; margin-top:10px;">
-      <p><strong>Bilder:</strong></p>
-      ${imagesHTML || "<p>-</p>"}
-    `;
-
-    document.getElementById("report").style.display = "none";
-    preview.style.display = "block";
-
-    const opt = {
-      margin: 0.5,
-      filename: 'arbeitsbericht.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(preview).save().then(() => {
-      document.getElementById("report").style.display = "block";
-      preview.style.display = "none";
-    });
-  });
+      
+  
 </script>
+
 
 </body>
 </html>
