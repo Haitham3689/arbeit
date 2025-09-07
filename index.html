@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Arbeitsbericht</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
@@ -10,8 +10,8 @@
     body {
       font-family: "Roboto", Arial, sans-serif;
       margin: 20px;
-      background:#eef2f7;
-      color:#333;
+      background: #eef2f7;
+      color: #333;
     }
     h1 {
       text-align: center;
@@ -19,84 +19,107 @@
       margin-bottom: 20px;
     }
     #report, #reportPreview {
-      background:#fff;
-      padding:25px;
-      border-radius:12px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.15);
-      max-width:850px;
-      margin:auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      max-width: 850px;
+      margin: auto;
     }
     label {
-      display:block;
-      margin-top:15px;
-      font-weight:bold;
-      color:#004080;
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #004080;
     }
     input, textarea {
-      width:100%;
-      padding:10px;
-      margin-top:5px;
-      border-radius:6px;
-      border:1px solid #ccc;
-      box-sizing:border-box;
-      font-size:14px;
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 14px;
     }
     textarea { resize: vertical; }
     canvas {
-      border:2px dashed #004080;
-      width:100%;
-      height:150px;
-      margin-top:10px;
-      border-radius:6px;
-      background:#fafafa;
+      border: 2px dashed #004080;
+      width: 100%;
+      height: 150px;
+      margin-top: 10px;
+      border-radius: 6px;
+      background: #fafafa;
     }
     button {
-      margin-top:15px;
-      padding:10px 18px;
-      border:none;
-      border-radius:6px;
-      cursor:pointer;
-      font-size:14px;
-      transition:0.2s;
+      margin-top: 15px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.2s;
     }
-    #saveBtn { background:#007BFF; color:#fff; }
-    #saveBtn:hover { background:#0056b3; }
-    #clearSig { background:#dc3545; color:#fff; }
-    #clearSig:hover { background:#a71d2a; }
-    #addMaterial { background:#28a745; color:#fff; margin-top:10px; }
-    #addMaterial:hover { background:#1e7e34; }
-    .actions { display:flex; gap:10px; margin-top:20px; justify-content:center; }
-    .materials-list input { margin-bottom:8px; }
-    .no-print { display:block; }
-    #reportPreview { display:none; }
-    /* PDF-Stil */
-    #reportPreview h2 { color:#004080; border-bottom:2px solid #004080; padding-bottom:5px; }
-    #reportPreview p { margin:8px 0; font-size:15px; }
-    #reportPreview ul { margin:5px 0 15px 20px; }
+    #saveBtn { background: #007BFF; color: #fff; }
+    #saveBtn:hover { background: #0056b3; }
+    #clearSig { background: #dc3545; color: #fff; }
+    #clearSig:hover { background: #a71d2a; }
+    #addMaterial { background: #28a745; color: #fff; margin-top: 10px; }
+    #addMaterial:hover { background: #1e7e34; }
+    .actions { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
+    .materials-list input { margin-bottom: 8px; }
+    .no-print { display: block; }
+    #reportPreview { display: none; }
+    .image-box {
+      display: inline-block;
+      position: relative;
+      margin: 10px;
+    }
+    .image-box img {
+      max-width: 150px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .image-box button {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+    #reportPreview img {
+      max-width: 300px;
+      display: block;
+      margin: 10px 0;
+    }
   </style>
 </head>
 <body>
 
-<h1>Arbeitsbericht</h1>
+<h1>abnahme</h1>
 
 <!-- Eingabeformular -->
 <div id="report">
   <label>Kundenname</label>
-  <input type="text" id="kunde" placeholder="Name des Kunden">
+  <input type="text" id="kunde" placeholder="Name des Kunden" />
 
   <h3 style="color:#004080; margin-top:20px;">Adresse</h3>
   <label>Straße und Hausnummer</label>
-  <input type="text" id="strasse" placeholder="z.B. Musterstraße 12">
+  <input type="text" id="strasse" placeholder="z.B. Musterstraße 12" />
 
   <label>Postleitzahl</label>
-  <input type="text" id="plz" placeholder="z.B. 12345">
+  <input type="text" id="plz" placeholder="z.B. 12345" />
 
   <label>Ort</label>
-  <input type="text" id="ort" placeholder="z.B. Berlin">
+  <input type="text" id="ort" placeholder="z.B. Berlin" />
 
   <label>Verwendete Materialien</label>
   <div id="materials" class="materials-list">
-    <input type="text" placeholder="Material eingeben">
+    <input type="text" placeholder="Material eingeben" />
   </div>
   <button type="button" id="addMaterial" class="no-print">+ Material hinzufügen</button>
 
@@ -104,10 +127,14 @@
   <textarea id="arbeit" rows="3" placeholder="Arbeiten beschreiben"></textarea>
 
   <label>Datum</label>
-  <input type="date" id="datum">
+  <input type="date" id="datum" />
 
   <label>Unterschrift des Kunden</label>
   <canvas id="signature-pad"></canvas>
+
+  <label>Bilder hochladen</label>
+  <input type="file" id="imageUpload" accept="image/*" multiple />
+  <div id="imagePreview"></div>
 </div>
 
 <!-- Vorschau fürs PDF -->
@@ -134,7 +161,6 @@
     div.appendChild(input);
   });
 
-  // Default: heutiges Datum im deutschen Format setzen
   const heute = new Date();
   const iso = heute.toISOString().split("T")[0];
   document.getElementById("datum").value = iso;
@@ -149,7 +175,59 @@
     });
   }
 
-  document.getElementById("saveBtn").addEventListener("click", () => {
+  // Bild hinzufügen
+  document.getElementById("imageUpload").addEventListener("change", function(event) {
+    const files = event.target.files;
+    const preview = document.getElementById("imagePreview");
+
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const imageBox = document.createElement("div");
+        imageBox.className = "image-box";
+
+        const img = document.createElement("img");
+        img.src = e.target.result;
+
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "🗑️";
+        delBtn.addEventListener("click", () => {
+          imageBox.remove();
+        });
+
+        imageBox.appendChild(img);
+        imageBox.appendChild(delBtn);
+        preview.appendChild(imageBox);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Reset input
+    event.target.value = '';
+  });
+
+  // تحميل الصور كـ Promises
+  const getBase64Images = () => {
+    const uploadedImageBoxes = document.querySelectorAll("#imagePreview .image-box img");
+    const promises = [];
+
+    uploadedImageBoxes.forEach(img => {
+      promises.push(
+        new Promise((resolve) => {
+          const image = new Image();
+          image.crossOrigin = "anonymous";
+          image.onload = () => {
+            resolve(`<img src="${img.src}" alt="Bild" style="max-width:300px; display:block; margin-bottom:10px;">`);
+          };
+          image.src = img.src;
+        })
+      );
+    });
+
+    return Promise.all(promises);
+  };
+
+  document.getElementById("saveBtn").addEventListener("click", async () => {
     if (signaturePad.isEmpty()) {
       alert("Bitte unterschreiben, bevor Sie speichern!");
       return;
@@ -161,6 +239,7 @@
     const ort = document.getElementById("ort").value;
     const arbeit = document.getElementById("arbeit").value;
     const datum = formatDateToGerman(document.getElementById("datum").value);
+    const signatureImage = signaturePad.toDataURL();
 
     const materialsInputs = document.querySelectorAll("#materials input");
     let materialsList = "";
@@ -170,7 +249,8 @@
       }
     });
 
-    const signatureImage = signaturePad.toDataURL();
+    const imagesHTMLArray = await getBase64Images();
+    const imagesHTML = imagesHTMLArray.join("");
 
     const preview = document.getElementById("reportPreview");
     preview.innerHTML = `
@@ -182,18 +262,20 @@
       <p><strong>Arbeiten:</strong><br>${arbeit || "-"}</p>
       <p><strong>Datum:</strong> ${datum}</p>
       <p><strong>Unterschrift:</strong></p>
-      <img src="${signatureImage}" style="max-width:200px; display:block; margin-top:10px;">
+      <img src="${signatureImage}" style="width:200px; margin-top:10px;">
+      <p><strong>Bilder:</strong></p>
+      ${imagesHTML || "<p>-</p>"}
     `;
 
     document.getElementById("report").style.display = "none";
     preview.style.display = "block";
 
     const opt = {
-      margin:       0.5,
-      filename:     'arbeitsbericht.pdf',
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      margin: 0.5,
+      filename: 'arbeitsbericht.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
 
     html2pdf().set(opt).from(preview).save().then(() => {
