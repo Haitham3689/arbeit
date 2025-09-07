@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arbeitsbericht</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+  <style>
+    body {
+      font-family: "Roboto", Arial, sans-serif;
+      margin: 20px;
+      background:#eef2f7;
+      color:#333;
+    }
+    h1 {
+      text-align: center;
+      color: #004080;
+      margin-bottom: 20px;
+    }
+    #report, #reportPreview {
+      background:#fff;
+      padding:25px;
+      border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+      max-width:850px;
+      margin:auto;
+    }
+    label {
+      display:block;
+      margin-top:15px;
+      font-weight:bold;
+      color:#004080;
+    }
+    input, textarea {
+      width:100%;
+      padding:10px;
+      margin-top:5px;
+      border-radius:6px;
+      border:1px solid #ccc;
+      box-sizing:border-box;
+      font-size:14px;
+    }
+    textarea { resize: vertical; }
+    canvas {
+      border:2px dashed #004080;
+      width:100%;
+      height:150px;
+      margin-top:10px;
+      border-radius:6px;
+      background:#fafafa;
+    }
+    button {
+      margin-top:15px;
+      padding:10px 18px;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:14px;
+      transition:0.2s;
+    }
+    #saveBtn { background:#007BFF; color:#fff; }
+    #saveBtn:hover { background:#0056b3; }
+    #clearSig { background:#dc3545; color:#fff; }
+    #clearSig:hover { background:#a71d2a; }
+    #addMaterial { background:#28a745; color:#fff; margin-top:10px; }
+    #addMaterial:hover { background:#1e7e34; }
+    .actions { display:flex; gap:10px; margin-top:20px; justify-content:center; }
+    .materials-list input { margin-bottom:8px; }
+    .no-print { display:block; }
+    #reportPreview { display:none; }
+    /* PDF-Stil */
+    #reportPreview h2 { color:#004080; border-bottom:2px solid #004080; padding-bottom:5px; }
+    #reportPreview p { margin:8px 0; font-size:15px; }
+    #reportPreview ul { margin:5px 0 15px 20px; }
+  </style>
+</head>
+<body>
+
+<h1>Arbeitsbericht</h1>
+
+<!-- Eingabeformular -->
+<div id="report">
+  <label>Kundenname</label>
+  <input type="text" id="kunde" placeholder="Name des Kunden">
+
+  <h3 style="color:#004080; margin-top:20px;">Adresse</h3>
+  <label>Straße und Hausnummer</label>
+  <input type="text" id="strasse" placeholder="z.B. Musterstraße 12">
+
+  <label>Postleitzahl</label>
+  <input type="text" id="plz" placeholder="z.B. 12345">
+
+  <label>Ort</label>
+  <input type="text" id="ort" placeholder="z.B. Berlin">
+
+  <label>Verwendete Materialien</label>
+  <div id="materials" class="materials-list">
+    <input type="text" placeholder="Material eingeben">
+  </div>
+  <button type="button" id="addMaterial" class="no-print">+ Material hinzufügen</button>
+
+  <label>Durchgeführte Arbeiten</label>
+  <textarea id="arbeit" rows="3" placeholder="Arbeiten beschreiben"></textarea>
+
+  <label>Datum</label>
+  <input type="date" id="datum">
+
+  <label>Unterschrift des Kunden</label>
+  <canvas id="signature-pad"></canvas>
+</div>
+
+<!-- Vorschau fürs PDF -->
+<div id="reportPreview"></div>
+
+<div class="actions no-print">
+  <button type="button" id="clearSig">🧹 Unterschrift löschen</button>
+  <button type="button" id="saveBtn">💾 Als PDF speichern</button>
+</div>
+
+<script>
+  const canvas = document.getElementById("signature-pad");
+  const signaturePad = new SignaturePad(canvas);
+
+  document.getElementById("clearSig").addEventListener("click", () => {
+    signaturePad.clear();
+  });
+
+  document.getElementById("addMaterial").addEventListener("click", () => {
+    const div = document.getElementById("materials");
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Material eingeben";
+    div.appendChild(input);
+  });
+
+  // Default: heutiges Datum im deutschen Format setzen
+  const heute = new Date();
+  const iso = heute.toISOString().split("T")[0];
+  document.getElementById("datum").value = iso;
+
+  function formatDateToGerman(dateStr) {
+    if (!dateStr) return "-";
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("de-DE", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+  }
+
+  document.getElementById("saveBtn").addEventListener("click", () => {
+    if (signaturePad.isEmpty()) {
+      alert("Bitte unterschreiben, bevor Sie speichern!");
+      return;
+    }
+
+    const kunde = document.getElementById("kunde").value;
+    const strasse = document.getElementById("strasse").value;
+    const plz = document.getElementById("plz").value;
+    const ort = document.getElementById("ort").value;
+    const arbeit = document.getElementById("arbeit").value;
+    const datum = formatDateToGerman(document.getElementById("datum").value);
+
+    const materialsInputs = document.querySelectorAll("#materials input");
+    let materialsList = "";
+    materialsInputs.forEach(inp => {
+      if (inp.value.trim() !== "") {
+        materialsList += `<li>${inp.value}</li>`;
+      }
+    });
+
+    const signatureImage = signaturePad.toDataURL();
+
+    const preview = document.getElementById("reportPreview");
+    preview.innerHTML = `
+      <h2>Arbeitsbericht</h2>
+      <p><strong>Kunde:</strong> ${kunde || "-"}</p>
+      <p><strong>Adresse:</strong> ${strasse || "-"}, ${plz || ""} ${ort || ""}</p>
+      <p><strong>Verwendete Materialien:</strong></p>
+      <ul>${materialsList || "<li>-</li>"}</ul>
+      <p><strong>Arbeiten:</strong><br>${arbeit || "-"}</p>
+      <p><strong>Datum:</strong> ${datum}</p>
+      <p><strong>Unterschrift:</strong></p>
+      <img src="${signatureImage}" style="max-width:200px; display:block; margin-top:10px;">
+    `;
+
+    document.getElementById("report").style.display = "none";
+    preview.style.display = "block";
+
+    const opt = {
+      margin:       0.5,
+      filename:     'arbeitsbericht.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(preview).save().then(() => {
+      document.getElementById("report").style.display = "block";
+      preview.style.display = "none";
+    });
+  });
+</script>
+
+</body>
+</html>
