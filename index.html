@@ -7,133 +7,49 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
   <style>
-    body {
-      font-family: "Roboto", Arial, sans-serif;
-      margin: 20px;
-      background: #eef2f7;
-      color: #333;
-    }
-    h1 {
-      text-align: center;
-      color: #004080;
-      margin-bottom: 20px;
-    }
+    body { font-family:"Roboto",Arial,sans-serif; margin:20px; background:#eef2f7; color:#333; }
+    h1,h2,h3 { text-align:center; color:#004080; }
     #report, #reportPreview {
-      background: #fff;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      max-width: 850px;
-      margin: auto;
+      background:#fff; padding:25px; border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.15); max-width:850px; margin:auto;
     }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-      color: #004080;
+    label { display:block; margin-top:15px; font-weight:bold; color:#004080; }
+    input,textarea { width:100%; padding:10px; margin-top:5px; border-radius:6px; border:1px solid #ccc; box-sizing:border-box; font-size:14px; }
+    textarea{ resize:vertical; }
+    canvas{ border:2px dashed #004080; width:100%; height:150px; margin-top:10px; border-radius:6px; background:#fafafa; }
+    button{ margin-top:15px; padding:10px 18px; border:none; border-radius:6px; cursor:pointer; font-size:14px; transition:0.2s; }
+    #saveBtn{ background:#007BFF; color:#fff; }
+    #saveBtn:hover{ background:#0056b3; }
+    #clearSig{ background:#dc3545; color:#fff; }
+    #clearSig:hover{ background:#a71d2a; }
+    #addMaterial{ background:#28a745; color:#fff; margin-top:10px; }
+    #addMaterial:hover{ background:#1e7e34; }
+    .actions{ display:flex; gap:10px; margin-top:20px; justify-content:center; }
+    .materials-list input{ margin-bottom:8px; }
+    .no-print{ display:block; }
+    #reportPreview{ display:none; }
+    .image-box{ margin:10px 0; }
+    .image-box img{ max-width:100%; height:auto; display:block; margin:auto; }
+    .pdf-images img{
+      display:block; max-width:100%; max-height:100%;
+      object-fit:contain; margin:10px auto;
+      page-break-before:always;
     }
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-      font-size: 14px;
-    }
-    textarea { resize: vertical; }
-    canvas {
-      border: 2px dashed #004080;
-      width: 100%;
-      height: 150px;
-      margin-top: 10px;
-      border-radius: 6px;
-      background: #fafafa;
-    }
-    button {
-      margin-top: 15px;
-      padding: 10px 18px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.2s;
-    }
-    #saveBtn { background: #007BFF; color: #fff; }
-    #saveBtn:hover { background: #0056b3; }
-    #clearSig { background: #dc3545; color: #fff; }
-    #clearSig:hover { background: #a71d2a; }
-    #addMaterial { background: #28a745; color: #fff; margin-top: 10px; }
-    #addMaterial:hover { background: #1e7e34; }
-    .actions { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
-    .materials-list input { margin-bottom: 8px; }
-    .no-print { display: block; }
-    #reportPreview { display: none; }
-    .image-box {
-      display: inline-block;
-      position: relative;
-      margin: 10px;
-    }
-    .image-box img {
-      max-width: 150px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-    .image-box button {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      background: red;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-    }
-    #reportPreview img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 10px 0;
-    
-}
-
-
-
-
-#reportPreview > * {
-  page-break-inside: avoid;
-  break-inside: avoid;
-
-}
-
-
   </style>
 </head>
 <body>
 
-<!-- الشعار -->
-<div style="text-align:center; margin-bottom:20px;">
-   <img src="images/heilbronn-fliesenleger-fliesenreinigung-logo-text.jpeg" alt="Logo">
-       <img src="images/heilbronn-fliesenleger-fliesenreinigung-logo.jpeg" alt="Logo"
- style="max-width:200px;" />
-</div>
+<h1>Arbeitsbericht</h1>
 
-<h1>abnahme</h1>
-
-<!-- Eingabeformular -->
 <div id="report">
   <label>Kundenname</label>
   <input type="text" id="kunde" placeholder="Name des Kunden" />
 
-  <h3 style="color:#004080; margin-top:20px;">Adresse</h3>
+  <h3>Adresse</h3>
   <label>Straße und Hausnummer</label>
   <input type="text" id="strasse" placeholder="z.B. Musterstraße 12" />
-  
   <label>Postleitzahl</label>
   <input type="text" id="plz" placeholder="z.B. 12345" />
-
   <label>Ort</label>
   <input type="text" id="ort" placeholder="z.B. Berlin" />
 
@@ -157,186 +73,128 @@
   <div id="imagePreview"></div>
 </div>
 
-<!-- Vorschau fürs PDF -->
-<div id="reportPreview"></div>
-
 <div class="actions no-print">
   <button type="button" id="clearSig">🧹 Unterschrift löschen</button>
   <button type="button" id="saveBtn">💾 Als PDF speichern</button>
-  
-
 </div>
 
+<div id="reportPreview"></div>
+
 <script>
-  const canvas = document.getElementById("signature-pad");
-  const signaturePad = new SignaturePad(canvas);
+const canvas = document.getElementById("signature-pad");
+const signaturePad = new SignaturePad(canvas);
+const preview = document.getElementById("reportPreview");
 
-  document.getElementById("clearSig").addEventListener("click", () => {
-    signaturePad.clear();
-  });
+document.getElementById("clearSig").addEventListener("click", ()=>signaturePad.clear());
 
-  document.getElementById("addMaterial").addEventListener("click", () => {
-    const div = document.getElementById("materials");
-    const input = document.createElement("input");
-    input.type = "text";
-    input.placeholder = "Material eingeben";
-    div.appendChild(input);
-  });
+document.getElementById("addMaterial").addEventListener("click", ()=>{
+  const div=document.getElementById("materials");
+  const input=document.createElement("input");
+  input.type="text"; input.placeholder="Material eingeben";
+  div.appendChild(input);
+});
 
-  // Heute Datum setzen
-  const heute = new Date();
-  const iso = heute.toISOString().split("T")[0];
-  document.getElementById("datum").value = iso;
+// Datum auf heute setzen
+document.getElementById("datum").value = new Date().toISOString().split("T")[0];
 
-  function formatDateToGerman(dateStr) {
-    if (!dateStr) return "-";
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("de-DE", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    });
-  }
-
-  // Bilder Vorschau & Upload
-  document.getElementById("imageUpload").addEventListener("change", function(event) {
-    const files = event.target.files;
-    const preview = document.getElementById("imagePreview");
-
-    Array.from(files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const imageBox = document.createElement("div");
-        imageBox.className = "image-box";
-
-       const img = document.createElement("img");
-img.src = e.target.result;
-img.crossOrigin = "anonymous"; // هذا هو المهم
-
-
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "🗑️";
-        delBtn.addEventListener("click", () => {
-          imageBox.remove();
-        });
-
-        imageBox.appendChild(img);
-        imageBox.appendChild(delBtn);
-        preview.appendChild(imageBox);
-      };
-      reader.readAsDataURL(file);
-    });
-
-    event.target.value = '';
-  });
-
-//////
-
-
-////////
-
-  // تحويل الصور المرفوعة إلى HTML للعرض داخل الـ PDF
-  async function getUploadedImagesBase64() {
-    const imgs = document.querySelectorAll("#imagePreview .image-box img");
-    const arr = [];
-    for (const img of imgs) {
-      arr.push(`<img src="${img.src}" alt="Bild" style="max-width:300px; display:block; margin-bottom:10px;">`);
+// Bilder hochladen und Vorschau
+document.getElementById("imageUpload").addEventListener("change", function(event){
+  const files = event.target.files;
+  const previewDiv = document.getElementById("imagePreview");
+  previewDiv.innerHTML="";
+  Array.from(files).forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = function(e){
+      const div=document.createElement("div");
+      div.className="image-box";
+      const img=document.createElement("img");
+      img.src=e.target.result;
+      div.appendChild(img);
+      previewDiv.appendChild(div);
     }
-    return arr.join("");
-  }
+    reader.readAsDataURL(file);
+  });
+  event.target.value='';
+});
 
-   ////
-  // 🕓 ننتظر تحميل كل الصور قبل إنشاء PDF
-function waitForImagesToLoad(container) {
-  const images = container.querySelectorAll("img");
-  const promises = [];
+// Bilder in Base64 für PDF
+async function getUploadedImagesBase64(){
+  const imgs=document.querySelectorAll("#imagePreview .image-box img");
+  const arr=[];
+  imgs.forEach(img=>{
+    arr.push(`<img src="${img.src}" alt="Bild" />`);
+  });
+  return arr.join("");
+}
 
-  images.forEach(img => {
-    if (!img.complete) {
-      promises.push(new Promise(resolve => {
-        img.onload = img.onerror = resolve;
-          console.log(`Image failed: ${img.src}`);
-          resolve(); // حتى لو فشلت، نكمل
-      }));
+// Warten bis Bilder geladen
+function waitForImagesToLoad(container){
+  const images=container.querySelectorAll("img");
+  const promises=[];
+  images.forEach(img=>{
+    if(!img.complete){
+      promises.push(new Promise(resolve=>{ img.onload=img.onerror=resolve; }));
     }
   });
-
   return Promise.all(promises);
 }
 
-document.getElementById("saveBtn").addEventListener("click", async () => {
-  if (signaturePad.isEmpty()) {
-    alert("Bitte unterschreiben, bevor Sie speichern!");
-    return;
-  }
+// Datum formatieren
+function formatDateToGerman(dateStr){
+  if(!dateStr) return "-";
+  const date=new Date(dateStr);
+  return date.toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"});
+}
 
-  const kunde = document.getElementById("kunde").value;
-  const strasse = document.getElementById("strasse").value;
-  const plz = document.getElementById("plz").value;
-  const ort = document.getElementById("ort").value;
-  const arbeit = document.getElementById("arbeit").value;
-  const datum = formatDateToGerman(document.getElementById("datum").value);
-  const signatureImage = signaturePad.toDataURL();
+// PDF speichern
+document.getElementById("saveBtn").addEventListener("click", async ()=>{
+  if(signaturePad.isEmpty()){ alert("Bitte unterschreiben, bevor Sie speichern!"); return; }
 
-  const materialsInputs = document.querySelectorAll("#materials input");
-  let materialsList = "";
-  materialsInputs.forEach(inp => {
-    if (inp.value.trim() !== "") {
-      materialsList += `<li>${inp.value}</li>`;
-    }
-  });
+  const kunde=document.getElementById("kunde").value;
+  const strasse=document.getElementById("strasse").value;
+  const plz=document.getElementById("plz").value;
+  const ort=document.getElementById("ort").value;
+  const arbeit=document.getElementById("arbeit").value;
+  const datum=formatDateToGerman(document.getElementById("datum").value);
+  const signatureImage=signaturePad.toDataURL();
+  const materialsInputs=document.querySelectorAll("#materials input");
+  let materialsList="";
+  materialsInputs.forEach(inp=>{ if(inp.value.trim()!=="") materialsList+=`<li>${inp.value}</li>`; });
 
-  const imagesHTML = await getUploadedImagesBase64();
+  const imagesHTML=await getUploadedImagesBase64();
 
-  const preview = document.getElementById("reportPreview");
-  preview.innerHTML = `
-    <div>
-      <img src="images/heilbronn-fliesenleger-fliesenreinigung-logo-text.jpeg" alt="Logo" />
-      <img src="images/heilbronn-fliesenleger-fliesenreinigung-logo.jpeg" alt="Logo" />
-    </div>
+  preview.innerHTML=`
     <h2>Arbeitsbericht</h2>
-    <p><strong>Kunde:</strong> ${kunde || "-"}</p>
-    <p><strong>Adresse:</strong> ${strasse || "-"}, ${plz || ""} ${ort || ""}</p>
-    <p><strong>Verwendete Materialien:</strong></p>
-    <ul>${materialsList || "<li>-</li>"}</ul>
-    <p><strong>Arbeiten:</strong><br>${arbeit || "-"}</p>
+    <p><strong>Kunde:</strong> ${kunde||"-"}</p>
+    <p><strong>Adresse:</strong> ${strasse||"-"}, ${plz||""} ${ort||""}</p>
+    <p><strong>Materialien:</strong></p>
+    <ul>${materialsList||"<li>-</li>"}</ul>
+    <p><strong>Arbeiten:</strong><br>${arbeit||"-"}</p>
     <p><strong>Datum:</strong> ${datum}</p>
     <p><strong>Unterschrift:</strong></p>
-    <img src="${signatureImage}" alt="Unterschrift" style="max-width:300px; display:block; margin-bottom:10px;" />
-    <p><strong>Bilder:</strong></p>
-    ${imagesHTML || "<p>-</p>"}
+    <img src="${signatureImage}" alt="Unterschrift" style="max-width:300px; display:block; margin:20px auto;" />
+    <h3>Bilder:</h3>
+    <div class="pdf-images">${imagesHTML||"<p>-</p>"}</div>
   `;
 
-  document.getElementById("report").style.display = "none";
-  preview.style.display = "block";
-
-  // ⏳ ننتظر تحميل الصور
+  document.getElementById("report").style.display="none";
+  preview.style.display="block";
   await waitForImagesToLoad(preview);
 
-  // إعدادات الـ PDF
-  const opt = {
-    margin: 0.5,
-    filename: 'arbeitsbericht.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 3, useCORS: true, scrollY: 0 },
-    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+  const opt={
+    margin:0.5,
+    filename:'arbeitsbericht.pdf',
+    image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2,useCORS:true,scrollY:0},
+    jsPDF:{unit:'pt',format:'a4',orientation:'portrait'},
+    pagebreak:{mode:['avoid-all','css','legacy']}
   };
-
-  // إنشاء الـ PDF وحفظه
   await html2pdf().set(opt).from(preview).save();
 
-  // عرض النموذج من جديد
-  document.getElementById("report").style.display = "block";
-  preview.style.display = "none";
+  document.getElementById("report").style.display="block";
+  preview.style.display="none";
 });
-
-  
-
-      
-  
 </script>
-
 
 </body>
 </html>
