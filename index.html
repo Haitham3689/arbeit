@@ -3,12 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Arbeitsbericht</title>
+  <title>abnahme</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
   <style>
-    body { font-family:"Roboto",Arial,sans-serif; margin:20px; background:#eef2f7; color:#333; }
-    h1,h2,h3 { text-align:center; color:#004080; }
+    body {
+  font-family: "Roboto", Arial, sans-serif;
+  margin: 20px;
+  background: url("images/heilbronn-fliesenleger-fliesenreinigung.jpeg") no-repeat center center fixed;
+  background-size: cover; /* تخلي الصورة تغطي الشاشة كاملة */
+  color: #333;
+}
+
+
+
+
+
+
+#reportPreview {
+  display:none;
+  background: url("images/-heilbronn-startseite-uebersicht-1.webp") no-repeat center center;
+  background-size: cover;
+  padding:25px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  max-width:850px;
+  margin:auto;
+  min-height: 1123px;
+}
+
+
+
+
+
+
+
+
+     h1 { text-align:center; color:chartreuse; }
+    h2,h3 { text-align:center; color:#004080; }
     #report, #reportPreview {
       background:#fff; padding:25px; border-radius:12px;
       box-shadow:0 4px 12px rgba(0,0,0,0.15); max-width:850px; margin:auto;
@@ -27,7 +59,7 @@
     .actions{ display:flex; gap:10px; margin-top:20px; justify-content:center; }
     .materials-list input{ margin-bottom:8px; }
     .no-print{ display:block; }
-    #reportPreview{ display:none; }
+   /* #reportPreview{ display:none; }*/
     .image-box{ margin:10px 0; }
     .image-box img{ max-width:100%; height:auto; display:block; margin:auto; }
     .pdf-images img{
@@ -38,8 +70,24 @@
   </style>
 </head>
 <body>
+  <div class="image-box">
+        <a href="https://www.adragna-wohndesign.de/#raum-umgebung.html" target="_blank">
+          <img src="images/heilbronn-fliesenleger-fliesenreinigung-logo.jpeg" alt="Mein Logo"/>
+        </a>
 
-<h1>Arbeitsbericht</h1>
+        <a href="https://www.adragna-wohndesign.de/#raum-umgebung.html" target="_blank">
+          <img src="images/heilbronn-fliesenleger-fliesenreinigung-logo-text.jpeg" alt="Mein Logo"/>
+        </a>
+
+  </div>
+
+
+ 
+
+
+
+       
+<h1>abnahme</h1>
 
 <div id="report">
   <label>Kundenname</label>
@@ -164,7 +212,17 @@ document.getElementById("saveBtn").addEventListener("click", async ()=>{
   const imagesHTML=await getUploadedImagesBase64();
 
   preview.innerHTML=`
-    <h2>Arbeitsbericht</h2>
+   
+    <h2>abnahme</h2>
+   
+  
+   <div style="text-align:center; margin-bottom:20px;">
+  <img src="images/heilbronn-fliesenleger-fliesenreinigung-logo.jpeg" 
+       alt="Logo" style="max-width:150px;" />
+  <img src="images/heilbronn-fliesenleger-fliesenreinigung-logo-text.jpeg" 
+       alt="Logo Text" style="max-width:250px;" />
+</div>
+  
     <p><strong>Kunde:</strong> ${kunde||"-"}</p>
     <p><strong>Adresse:</strong> ${strasse||"-"}, ${plz||""} ${ort||""}</p>
     <p><strong>Materialien:</strong></p>
@@ -183,7 +241,7 @@ document.getElementById("saveBtn").addEventListener("click", async ()=>{
 
   const opt={
     margin:0.5,
-    filename:'arbeitsbericht.pdf',
+    filename:'abnahme.pdf',
     image:{type:'jpeg',quality:0.98},
     html2canvas:{scale:2,useCORS:true,scrollY:0},
     jsPDF:{unit:'pt',format:'a4',orientation:'portrait'},
