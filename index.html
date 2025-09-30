@@ -87,11 +87,15 @@
 
 
        
-<h1>abnahme</h1>
+<h1>Abnahme</h1>
 
 <div id="report">
   <label>Kundenname</label>
   <input type="text" id="kunde" placeholder="Name des Kunden" />
+   <label>Email</label>
+  <input type="text" id="Email" placeholder="email adresse" />
+  <label>Telefonnummer</label>
+  <input type="text" id="Telefonnummer" placeholder="telefonnummer eingeben" />
 
   <h3>Adresse</h3>
   <label>Straße und Hausnummer</label>
@@ -199,6 +203,8 @@ document.getElementById("saveBtn").addEventListener("click", async ()=>{
   if(signaturePad.isEmpty()){ alert("Bitte unterschreiben, bevor Sie speichern!"); return; }
 
   const kunde=document.getElementById("kunde").value;
+  const Email=document.getElementById("Email").value;
+  const Telefonnummer=document.getElementById("Telefonnummer").value;
   const strasse=document.getElementById("strasse").value;
   const plz=document.getElementById("plz").value;
   const ort=document.getElementById("ort").value;
@@ -213,7 +219,7 @@ document.getElementById("saveBtn").addEventListener("click", async ()=>{
 
   preview.innerHTML=`
    
-    <h2>abnahme</h2>
+    <h2>Abnahme</h2>
    
   
    <div style="text-align:center; margin-bottom:20px;">
@@ -224,6 +230,8 @@ document.getElementById("saveBtn").addEventListener("click", async ()=>{
 </div>
   
     <p><strong>Kunde:</strong> ${kunde||"-"}</p>
+    <p><strong>Email:</strong> ${Email||"-"}</p>
+    <p><strong>Telefonnummer:</strong> ${Telefonnummer||"-"}</p>
     <p><strong>Adresse:</strong> ${strasse||"-"}, ${plz||""} ${ort||""}</p>
     <p><strong>Materialien:</strong></p>
     <ul>${materialsList||"<li>-</li>"}</ul>
@@ -241,7 +249,7 @@ document.getElementById("saveBtn").addEventListener("click", async ()=>{
 
   const opt={
     margin:0.5,
-    filename:'abnahme.pdf',
+    filename:'Abnahme.pdf',
     image:{type:'jpeg',quality:0.98},
     html2canvas:{scale:2,useCORS:true,scrollY:0},
     jsPDF:{unit:'pt',format:'a4',orientation:'portrait'},
